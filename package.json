@@ -1,0 +1,31 @@
+{
+  "name": "enco-poodle-crud-interface",
+  "version": "0.1.0",
+  "description": "A CRUD API Consumer",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sichallinor/enco-poodle-crud-interface.git"
+  },
+  "keywords": [
+    "CRUD",
+    "API",
+    "SIMPLE"
+  ],
+  "author": "Simon Challinor <sdchallinor@gmail.com> (https://tdr-encompass.com/sichallinor)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sichallinor/enco-poodle-crud-interface/issues"
+  },
+  "homepage": "https://github.com/sichallinor/enco-poodle-crud-interface#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0"
+  },
+  "dependencies": {
+    "ajax-request": "^1.2.3"
+  }
+}
