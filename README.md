@@ -1,7 +1,7 @@
 # enco-poodle-crud-interface
 A CRUD API Consuming Interface
 
-Number Formatter
+POODLE CRUD INTERFACE
 =========
 
 Part of the ENCO project 
