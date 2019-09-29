@@ -12,7 +12,6 @@ module.exports = class poodle {
 
     static mode = null;
 
-    
     static default_mode = { 
     				// API MODE PROPERTIES
                     apitype : null,
@@ -39,7 +38,7 @@ module.exports = class poodle {
             this.mode = mode;
         }
 
-        console.log("MODE SET AS : ", this.mode);
+        if(this.debug) console.log("MODE SET AS : ", this.mode);
 
         //this.mode = Object.assign(this.mode, this.default_mode); 
     	//this.default_mode = {...this.default_mode, ...mode};
@@ -50,7 +49,7 @@ module.exports = class poodle {
     }
 
     static requireModePropertiesOrError(arr){
-        console.log("requireModePropertiesOrError");
+        if(this.debug)  console.log("requireModePropertiesOrError");
     	var mode = this.getMode();
     	var missing = [];
     	for(var i=0; i<arr.length; i++){
@@ -79,7 +78,7 @@ module.exports = class poodle {
             throw "ERROR : MISSING PROPERTIES";
     	}
 
-        console.log("getItems");
+        if(this.debug)  console.log("getItems");
         var prom;
         if(mode.apitype === "phpcrud"){
 
@@ -117,10 +116,21 @@ module.exports = class poodle {
     		return null;
     	}
 
-        console.log("getItem");
+        if(this.debug)  console.log("getItem");
         var prom;
         if(mode.apitype === "phpcrud"){
-            prom = apiservicePhpCrud.apiGetItem(mode.urlbase,mode.urlpath,mode.port,mode.identity);
+
+            return new Promise(function(resolve, reject) {
+                apiservicePhpCrud.apiGetItem(mode.urlbase,mode.urlpath,mode.port,mode.identity)
+                .then(function(response) {
+                    mode['model'] = response;
+                    resolve();
+                }, function(err) {
+                    reject();
+                });
+            });
+
+
         }else{
             //prom = apiserviceCyolo.apiGet(baseurl,context,search);
         }
@@ -138,7 +148,7 @@ module.exports = class poodle {
     		return null;
     	}
 
-        console.log("getItem");
+        if(this.debug) console.log("getItem");
         var prom;
         if(mode.apitype === "phpcrud"){
             prom = apiservicePhpCrud.apiUpdateItem(mode.urlbase,mode.urlpath,mode.port,mode.model);
@@ -159,7 +169,7 @@ module.exports = class poodle {
     		return null;
     	}
 
-        console.log("getItem");
+        if(this.debug) console.log("getItem");
         var prom;
         if(mode.apitype === "phpcrud"){
             prom = apiservicePhpCrud.apiCreateItem(mode.urlbase,mode.urlpath,mode.port,mode.model);
@@ -180,7 +190,7 @@ module.exports = class poodle {
     		return null;
     	}
 
-        console.log("getItem");
+        if(this.debug) console.log("getItem");
         var prom;
         if(mode.apitype === "phpcrud"){
             prom = apiservicePhpCrud.apiDeleteItem(mode.urlbase,mode.urlpath,mode.port,mode.identity);
