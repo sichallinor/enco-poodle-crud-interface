@@ -72,6 +72,9 @@ module.exports = {
               console.log(`statusCode: ${resp.statusCode}`)
               let response_data = '';
 
+              if(resp.statusCode!==200){
+                reject();
+              }
 
               // A chunk of data has been recieved.
               resp.on('data', (chunk) => {
@@ -87,14 +90,18 @@ module.exports = {
 
               });
 
+              req.on('error', (err) => {
+                console.log("Error: " + err.message);
+                reject();
+              })
+
+
+
 
 
             })
 
-            req.on('error', (err) => {
-              console.log("Error: " + err.message);
-              reject();
-            })
+
 
             if(data) req.write(data)
             req.end()

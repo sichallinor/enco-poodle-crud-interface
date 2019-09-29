@@ -38,15 +38,18 @@ module.exports = class poodle {
     }
 
     static requireModePropertiesOrError(arr){
+        console.log("requireModePropertiesOrError");
     	var mode = this.getMode();
     	var missing = [];
     	for(var i=0; i<arr.length; i++){
-    		if(!mode.hasOwnProperty(arr[i])){
+    		if(!mode.hasOwnProperty(arr[i]) || mode[arr[i]]===null ){
     			missing.push(arr[i]);
     		}
     	}
     	if(missing.length>0){
+            //throw "ERROR : MODE IS MISSING PROPS : " + missing;
     		console.log("ERROR : MODE IS MISSING PROPS : ",missing);
+            //throw "ERROR : MODE IS MISSING PROPS : " + missing;
     		return false
     	}
     	return true;
@@ -59,7 +62,7 @@ module.exports = class poodle {
     	//------------------------
 
     	if(!this.requireModePropertiesOrError(['urlbase','urlpath','port','apitype'])){
-    		return null;
+            throw "ERROR : MISSING PROPERTIES";
     	}
 
         console.log("getItems");
