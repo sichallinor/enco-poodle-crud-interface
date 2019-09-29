@@ -31,21 +31,21 @@ module.exports = class poodle {
                 };
 
 
-    static setMode(mode){
+    static alterMode(mode){
         if(this.mode){
             this.mode = Object.assign(this.mode, mode);
         }else{
             this.mode = mode;
         }
-
+        if(this.debug) console.log("MODE ALTERED TO : ", this.mode);
+        return this.mode;
+    }
+    static setMode(mode){
+        this.mode = mode;
         if(this.debug) console.log("MODE SET AS : ", this.mode);
-
-        //this.mode = Object.assign(this.mode, this.default_mode); 
-    	//this.default_mode = {...this.default_mode, ...mode};
     }	
     static getMode(){
     	return this.mode;
-        //return this.default_mode;
     }
 
     static requireModePropertiesOrError(arr){
