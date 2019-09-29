@@ -10,6 +10,9 @@ module.exports = class poodle {
 
     static debug = true;
 
+    static mode = null;
+
+    
     static default_mode = { 
     				// API MODE PROPERTIES
                     apitype : null,
@@ -29,12 +32,21 @@ module.exports = class poodle {
                 };
 
 
-
     static setMode(mode){
-    	this.default_mode = {...this.default_mode, ...mode};
+        if(this.mode){
+            this.mode = Object.assign(this.mode, mode);
+        }else{
+            this.mode = mode;
+        }
+
+        console.log("MODE SET AS : ", this.mode);
+
+        //this.mode = Object.assign(this.mode, this.default_mode); 
+    	//this.default_mode = {...this.default_mode, ...mode};
     }	
     static getMode(){
-    	return this.default_mode;
+    	return this.mode;
+        //return this.default_mode;
     }
 
     static requireModePropertiesOrError(arr){
@@ -52,6 +64,8 @@ module.exports = class poodle {
             //throw "ERROR : MODE IS MISSING PROPS : " + missing;
     		return false
     	}
+
+
     	return true;
     }
 
@@ -74,12 +88,12 @@ module.exports = class poodle {
 		        .then(function(response) {
 		        	var recItems = response.ge001;
                     // ADD ITEMS PROPERTY IF IT DOESNT EXIST
-                    if(!mode.hasOwnProperty('items')) {
+                    if(!mode.hasOwnProperty('items')){
                         mode['items'] = [];
                     }else{
                         mode.items.length = 0; // TO EMPTY THE ARRAY
                     }
-		        	mode.items.push(recItems);
+		        	mode.items.push(...recItems);
 		            resolve();
 		        }, function(err) {
 		            reject();
