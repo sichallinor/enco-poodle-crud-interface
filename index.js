@@ -73,7 +73,12 @@ module.exports = class poodle {
 	        	apiservicePhpCrud.apiGetItems(mode.urlbase,mode.urlpath,mode.port,mode.context,mode.search_phrase)
 		        .then(function(response) {
 		        	var recItems = response.ge001;
-		    		mode.items.length = 0; // TO EMPTY THE ARRAY
+                    // ADD ITEMS PROPERTY IF IT DOESNT EXIST
+                    if(!mode.hasOwnProperty('items')) {
+                        mode['items'] = [];
+                    }else{
+                        mode.items.length = 0; // TO EMPTY THE ARRAY
+                    }
 		        	mode.items.push(recItems);
 		            resolve();
 		        }, function(err) {
