@@ -2,8 +2,10 @@ const https = require('https');
 
 module.exports = {
 
-    apiGetItems(baseurl,path,port,context,search) {
 
+
+
+    apiGetItems(baseurl,path,port,context,search) {
         var urlpath;
         // currently only a context search OR a filter search
         if(context){
@@ -17,29 +19,30 @@ module.exports = {
 
     },
 
-    apiGetItem(baseurl,path,port,id) {
-        var urlpath = path + id;
+    apiGetItem(baseurl,path,port,identity) {
+        var urlpath = path + identity;
         return this.apiActionJson(baseurl,urlpath,port,'GET',null);
     },
 
     apiUpdateItem(baseurl,path,port,model) {
-        
         var id = model['id'];
         var urlpath = path + id;
 
         var data = JSON.stringify(model);
         return this.apiActionJson(baseurl,urlpath,port,'PUT',data);
-
     },
 
     apiCreateItem(baseurl,path,port,model) {
-
         var data = JSON.stringify(model);
         return this.apiActionJson(baseurl,path,port,'POST',data);
-
     },
 
-    apiDeleteItem(baseurl,path,port,id) {
+    apiDeleteItem(baseurl,path,port,identity) {
+        var urlpath = path + identity;
+        return this.apiActionJson(baseurl,urlpath,port,'DELETE',null);
+    },
+    apiDeleteItemFromModel(baseurl,path,port,model) {
+        var id = model['id'];
         var urlpath = path + id;
         return this.apiActionJson(baseurl,urlpath,port,'DELETE',null);
     },
@@ -79,7 +82,7 @@ module.exports = {
               resp.on('end', () => {
 
                 var response = JSON.parse(response_data);
-                console.log("response:",response);
+                //console.log("response:",response);
                 resolve(response);
 
               });
