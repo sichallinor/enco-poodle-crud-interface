@@ -2,17 +2,17 @@
 
 var apiservicePhpCrud = require('./services/ApiService_PhpCrud');
 
-module.exports = class poodle {
+module.exports =  {
 
-    static helloWorld() {
+     helloWorld() {
     	console.log("hello world - module is up and running");
-    }
+    },
 
-    static debug = true;
+    debug : true,
 
-    static mode = null;
+    mode : null,
 
-    static default_mode = { 
+    default_mode : { 
     				// API MODE PROPERTIES
                     apitype : null,
                     urlbase : null,
@@ -28,10 +28,10 @@ module.exports = class poodle {
                     items : [],
                     // RESULT : MODEL
                     model : null
-                };
+                },
 
 
-    static alterMode(mode){
+    alterMode(mode){
         if(this.mode){
             this.mode = Object.assign(this.mode, mode);
         }else{
@@ -39,16 +39,16 @@ module.exports = class poodle {
         }
         if(this.debug) console.log("MODE ALTERED TO : ", this.mode);
         return this.mode;
-    }
-    static setMode(mode){
+    },
+     setMode(mode){
         this.mode = mode;
         if(this.debug) console.log("MODE SET AS : ", this.mode);
-    }	
-    static getMode(){
+    },	
+     getMode(){
     	return this.mode;
-    }
+    },
 
-    static requireModePropertiesOrError(arr){
+     requireModePropertiesOrError(arr){
         if(this.debug)  console.log("requireModePropertiesOrError");
     	var mode = this.getMode();
     	var missing = [];
@@ -66,10 +66,10 @@ module.exports = class poodle {
 
 
     	return true;
-    }
+    },
 
 
-    static getItems(mode=null) {
+     getItems(mode=null) {
     	if(mode) this.setMode(mode)
     	mode = this.getMode();
     	//------------------------
@@ -105,9 +105,9 @@ module.exports = class poodle {
         }
 
 
-    }
+    },
 
-    static getItem(mode=null) {
+     getItem(mode=null) {
     	if(mode) this.setMode(mode)
     	mode = this.getMode();
     	//------------------------
@@ -136,10 +136,10 @@ module.exports = class poodle {
         }
 
         return prom;
-    }
+    },
 
 
-    static updateItem(mode=null) {
+     updateItem(mode=null) {
     	if(mode) this.setMode(mode)
     	mode = this.getMode();
     	//------------------------
@@ -157,10 +157,10 @@ module.exports = class poodle {
         }
 
         return prom;
-    }
+    },
 
 
-    static createItem(mode=null) {
+     createItem(mode=null) {
     	if(mode) this.setMode(mode)
     	mode = this.getMode();
     	//------------------------
@@ -178,10 +178,10 @@ module.exports = class poodle {
         }
 
         return prom;
-    }
+    },
 
 
-    static deleteItem(mode=null) {
+     deleteItem(mode=null) {
     	if(mode) this.setMode(mode)
     	mode = this.getMode();
     	//------------------------
@@ -199,11 +199,11 @@ module.exports = class poodle {
         }
 
         return prom;
-    }
+    },
 
 
     // A SIMPLE TEST FUNCTION
-	static numberFormatter(number, locale) {
+	 numberFormatter(number, locale) {
 	    return number.toLocaleString(locale);
 	}
 
