@@ -113,7 +113,7 @@ module.exports =  {
     	//------------------------
 
     	if(!this.requireModePropertiesOrError(['urlbase','urlpath','port','apitype','identity'])){
-    		return null;
+    		throw "ERROR : MISSING PROPERTIES";
     	}
 
         if(this.debug)  console.log("getItem");
@@ -123,7 +123,14 @@ module.exports =  {
             return new Promise(function(resolve, reject) {
                 apiservicePhpCrud.apiGetItem(mode.urlbase,mode.urlpath,mode.port,mode.identity)
                 .then(function(response) {
-                    mode['model'] = response;
+                    var recItem = response;
+                    // ADD ITEMS PROPERTY IF IT DOESNT EXIST
+                    if(!mode.hasOwnProperty('models')){
+                        mode['models'] = [];
+                    }else{
+                        mode.models.length = 0; // TO EMPTY THE ARRAY
+                    }
+                    mode.models.push(recItem);
                     resolve();
                 }, function(err) {
                     reject();
@@ -144,14 +151,14 @@ module.exports =  {
     	mode = this.getMode();
     	//------------------------
 
-    	if(!this.requireModePropertiesOrError(['urlbase','urlpath','port','apitype','model'])){
-    		return null;
+    	if(!this.requireModePropertiesOrError(['urlbase','urlpath','port','apitype','models'])){
+    		throw "ERROR : MISSING PROPERTIES";
     	}
 
-        if(this.debug) console.log("getItem");
+        if(this.debug) console.log("updateItem");
         var prom;
         if(mode.apitype === "phpcrud"){
-            prom = apiservicePhpCrud.apiUpdateItem(mode.urlbase,mode.urlpath,mode.port,mode.model);
+            prom = apiservicePhpCrud.apiUpdateItem(mode.urlbase,mode.urlpath,mode.port,mode.models);
         }else{
             //prom = apiserviceCyolo.apiGet(baseurl,context,search);
         }
@@ -165,14 +172,14 @@ module.exports =  {
     	mode = this.getMode();
     	//------------------------
 
-    	if(!this.requireModePropertiesOrError(['urlbase','urlpath','port','apitype','model'])){
-    		return null;
+    	if(!this.requireModePropertiesOrError(['urlbase','urlpath','port','apitype','models'])){
+    		throw "ERROR : MISSING PROPERTIES";
     	}
 
-        if(this.debug) console.log("getItem");
+        if(this.debug) console.log("createItem");
         var prom;
         if(mode.apitype === "phpcrud"){
-            prom = apiservicePhpCrud.apiCreateItem(mode.urlbase,mode.urlpath,mode.port,mode.model);
+            prom = apiservicePhpCrud.apiCreateItem(mode.urlbase,mode.urlpath,mode.port,mode.models);
         }else{
             //prom = apiserviceCyolo.apiGet(baseurl,context,search);
         }
@@ -187,10 +194,10 @@ module.exports =  {
     	//------------------------
 
     	if(!this.requireModePropertiesOrError(['urlbase','urlpath','port','apitype','identity'])){
-    		return null;
+    		throw "ERROR : MISSING PROPERTIES";
     	}
 
-        if(this.debug) console.log("getItem");
+        if(this.debug) console.log("deleteItem");
         var prom;
         if(mode.apitype === "phpcrud"){
             prom = apiservicePhpCrud.apiDeleteItem(mode.urlbase,mode.urlpath,mode.port,mode.identity);

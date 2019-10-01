@@ -24,16 +24,20 @@ module.exports = {
         return this.apiActionJson(baseurl,urlpath,port,'GET',null);
     },
 
-    apiUpdateItem(baseurl,path,port,model) {
-        var id = model['id'];
+    apiUpdateItem(baseurl,path,port,models) {
+        if(!models || models.length==0) return null;
+
+        var id = models[0]['id'];
         var urlpath = path + id;
 
-        var data = JSON.stringify(model);
+        var data = JSON.stringify(models[0]);
         return this.apiActionJson(baseurl,urlpath,port,'PUT',data);
     },
 
-    apiCreateItem(baseurl,path,port,model) {
-        var data = JSON.stringify(model);
+    apiCreateItem(baseurl,path,port,models) {
+        if(!models || models.length==0) return null;
+
+        var data = JSON.stringify(models[0]);
         return this.apiActionJson(baseurl,path,port,'POST',data);
     },
 
@@ -41,8 +45,10 @@ module.exports = {
         var urlpath = path + identity;
         return this.apiActionJson(baseurl,urlpath,port,'DELETE',null);
     },
-    apiDeleteItemFromModel(baseurl,path,port,model) {
-        var id = model['id'];
+    apiDeleteItemFromModel(baseurl,path,port,models) {
+        if(!models || models.length==0) return null;
+
+        var id = models[0]['id'];
         var urlpath = path + id;
         return this.apiActionJson(baseurl,urlpath,port,'DELETE',null);
     },
