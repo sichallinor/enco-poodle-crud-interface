@@ -4,14 +4,13 @@ module.exports = {
 
 
 
-
-    apiGetItems(baseurl,path,port,context,search) {
+    apiGetItems(baseurl,path,port,context,search,pagenum=1,recordsperpage=20) {
         var urlpath;
         // currently only a context search OR a filter search
         if(context){
-            urlpath = path + "&filter=context,eq," + context ;
+            urlpath = path + "?transform=1&filter=context,eq," + context + "&order=id&page=" + pagenum + ","+ recordsperpage ;
         }else if(search && search.length>1){
-        	urlpath = path + "&filter[]=tags,cs," + search + "&filter[]=title,cs," + search + "&satisfy=any" ;
+        	urlpath = path + "?transform=1&filter[]=tags,cs," + search + "&filter[]=title,cs," + search + "&satisfy=any&order=id&page=" + pagenum + ","+ recordsperpage ;
         }
 
         //return this.apiGetJson(url);
