@@ -27,7 +27,9 @@ module.exports =  {
                     // RESULT : ITEMS
                     items : [],
                     // RESULT : MODEL
-                    model : null
+                    models : [],
+
+                    schemas : []
                 },
 
 
@@ -85,14 +87,25 @@ module.exports =  {
 	        return new Promise(function(resolve, reject) {
 	        	apiservicePhpCrud.apiGetItems(mode.urlbase,mode.urlpath,mode.port,mode.context,mode.search_phrase)
 		        .then(function(response) {
-		        	var recItems = response.ge001;
                     // ADD ITEMS PROPERTY IF IT DOESNT EXIST
                     if(!mode.hasOwnProperty('items')){
                         mode['items'] = [];
                     }else{
                         mode.items.length = 0; // TO EMPTY THE ARRAY
                     }
-		        	mode.items.push(...recItems);
+                    // ----------------------------------
+                    //we may receive an object here 
+                    if(typeof response === 'object' && response !== null){
+                        for (var prop in response) {
+                            // WE ARE LOOKING FOR AN ARRAY
+                            var propVal = response[prop];
+                            if(Array.isArray(propVal)){
+                                // expand the items in prop and add them to mode items
+                                mode.items.push(...propVal);  
+                            }
+                        }
+                    }
+                    // ----------------------------------
 		            resolve();
 		        }, function(err) {
 		            reject();
