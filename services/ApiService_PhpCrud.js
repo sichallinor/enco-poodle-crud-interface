@@ -11,6 +11,8 @@ module.exports = {
             urlpath = path + "?transform=1&filter=context,eq," + context + "&order=id&page=" + pagenum + ","+ recordsperpage ;
         }else if(search && search.length>1){
         	urlpath = path + "?transform=1&filter[]=tags,cs," + search + "&filter[]=title,cs," + search + "&satisfy=any&order=id&page=" + pagenum + ","+ recordsperpage ;
+        }else{
+          urlpath = path + "?transform=1&order=id&page=" + pagenum + ","+ recordsperpage;
         }
 
         //return this.apiGetJson(url);
@@ -23,20 +25,33 @@ module.exports = {
         return this.apiActionJson(baseurl,urlpath,port,'GET',null);
     },
 
-    apiUpdateItem(baseurl,path,port,models) {
-        if(!models || models.length==0) return null;
-
-        var id = models[0]['id'];
+    apiUpdateItem(baseurl,path,port,model) {
+        var id = model['id'];
         var urlpath = path + id;
 
-        var data = JSON.stringify(models[0]);
+        var data = JSON.stringify(model);
         return this.apiActionJson(baseurl,urlpath,port,'PUT',data);
     },
 
-    apiCreateItem(baseurl,path,port,models) {
-        if(!models || models.length==0) return null;
+    apiUpdateItems(baseurl,path,port,models) {
+        var ids = [];
+        for(var i=0; i<models.length; i++){
+          ids.push(models[i]['id'])
+        }
 
-        var data = JSON.stringify(models[0]);
+        var idStr = ids.join(); //join them with a comma (default)
+        var urlpath = path + idStr;
+
+        var data = JSON.stringify(models);
+
+        console.log("apiUpdateItems",idStr,data)
+
+        return this.apiActionJson(baseurl,urlpath,port,'PUT',data);
+    },
+
+
+    apiCreateItem(baseurl,path,port,model) {
+        var data = JSON.stringify(model);
         return this.apiActionJson(baseurl,path,port,'POST',data);
     },
 

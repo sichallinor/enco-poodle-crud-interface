@@ -1,10 +1,10 @@
 {
   "name": "enco-poodle-crud-interface",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "A CRUD API Consumer",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --reporter spec"
+    "test": "mocha --require esm --reporter spec"
   },
   "repository": {
     "type": "git",
@@ -23,9 +23,12 @@
   "homepage": "https://github.com/sichallinor/enco-poodle-crud-interface#readme",
   "devDependencies": {
     "chai": "^4.2.0",
+    "esm": "^3.2.25",
     "mocha": "^6.2.0"
   },
   "dependencies": {
-    "ajax-request": "^1.2.3"
+    "ajax-request": "^1.2.3",
+    "chai-as-promised": "^7.1.1",
+    "enco-poodle-mode-simple": "^0.1.1"
   }
 }
