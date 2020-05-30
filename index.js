@@ -279,6 +279,7 @@ export default {
                     // ----------------------------------
                     // MODE SPECIFIC FUNCTIONALITY FOLLOWS 
                     // MAY CHOSE TO PLACE THIS FUNCTIONALITY THIS INTO MODE CLASS
+                    mfModelAndItems.modeUpdateModelWithData(mode,response)
                     mfModelAndItems.modeSetModelsAreClean(mode)
                     // ----------------------------------
                     resolve(response);
@@ -307,6 +308,7 @@ export default {
                     // ----------------------------------
                     // MODE SPECIFIC FUNCTIONALITY FOLLOWS 
                     // MAY CHOSE TO PLACE THIS FUNCTIONALITY THIS INTO MODE CLASS
+                    mfModelAndItems.modeUpdateModelWithData(mode,response)
                     mfModelAndItems.modeSetModelsAreClean(mode)
                     // ----------------------------------
                     resolve(response);
@@ -353,7 +355,6 @@ export default {
     // RESOLVES WHEN COMPLETE HAVING MODIFIED THE MODE
     deleteItemModeFunction(mode=null) {
         var self = this;
-
 
         return new Promise(function(resolve, reject) {
             // ---------------------------------
