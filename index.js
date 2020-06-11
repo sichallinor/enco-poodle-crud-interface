@@ -453,8 +453,13 @@ export default {
 
         // STORE REFERENCES
         var schema = (mode.schemas && mode.schemas.length>0) ? mode.schemas[0] : null;
+        var urlpath = mode.urlpath;
+        var parameters = this.getParametersString(mode);
 
-        var urlpath = mode.urlpath + this.getParametersString(mode);
+        // DOES THE MODE HAVE AN IDENTITY
+        var identity = (mode.search_data && mode.search_data.search_remote_identity) ? mode.search_data.search_remote_identity : null;        
+        // DOES THE MODE HAVE A SEARCH
+        var search = (mode.search_data && mode.search_data.search_remote &&  mode.search_data.search_remote.length>0) ? mode.search_data.search_remote : null;
 
         console.log("urlpath",urlpath)
 
@@ -464,7 +469,13 @@ export default {
             // temporarily forward request to OLD V1 FUNCTIONS
             return self.v1_getItems(mode);
         }else if(mode.apitype === "labrador"){
-            return apiserviceLabrador.apiReadItems(mode.urlbase,urlpath,mode.port,mode.protocol,mode.auth)
+            if(identity){
+                return apiserviceLabrador.apiReadItem(mode.urlbase,mode.urlpath,mode.port,mode.protocol,mode.auth,parameters,identity)
+            }else if(search){
+                return apiserviceLabrador.apiSearchItem(mode.urlbase,urlpath,mode.port,mode.protocol,mode.auth,parameters,search)
+            }else{
+                return apiserviceLabrador.apiReadItems(mode.urlbase,urlpath,mode.port,mode.protocol,mode.auth,parameters)
+            }
         }else{
 
         }
@@ -485,6 +496,7 @@ export default {
 
         var schema = (mode.schemas && mode.schemas.length>0) ? mode.schemas[0] : null;
         var identity = (mode.identity) ? mode.identity : 0;
+        var parameters = this.getParametersString(mode);
 
         //if(this.debug)  console.log("readItems");
         var prom;
@@ -492,7 +504,7 @@ export default {
             // temporarily forward request to OLD V1 FUNCTIONS
             return self.v1_getItem(mode);
         }else if(mode.apitype === "labrador"){
-            return apiserviceLabrador.apiReadItem(mode.urlbase,mode.urlpath,mode.port,mode.protocol,mode.auth,identity)
+            return apiserviceLabrador.apiReadItem(mode.urlbase,mode.urlpath,mode.port,mode.protocol,mode.auth,parameters,identity)
         }else{
 
         }

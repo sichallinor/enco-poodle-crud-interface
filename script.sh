@@ -34,3 +34,31 @@ then
 	npm install enco-poodle-mode-simple
 fi
 
+# ------------------------------------------
+# PATCH THE VERSION NUMBER (update by 1) and PUBLISH
+if [ $COMMAND = "patch-publish" ]
+then
+	git add .
+	git commit -a -m "AUTO PATCH"
+	
+	# update the version (with a patch)
+	npm version patch
+
+	# obtain the new version number
+	versionvar=$(cat package.json \
+	  | grep version \
+	  | head -1 \
+	  | awk -F: '{ print $2 }' \
+	  | sed 's/[",]//g' \
+	  | tr -d '[[:space:]]')
+
+	# print 
+	echo "v"$versionvar
+
+	# tag the repo push and to github
+	#git tag "v"$versionvar
+	git push origin master --tags
+	# publish to npm
+	npm publish
+
+fi

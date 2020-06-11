@@ -44,11 +44,13 @@ module.exports = {
         return extraHeaders
     },
 
-    apiReadItems(baseurl,path,port,protocol,auth) {
+    apiReadItems(baseurl,path,port,protocol,auth,parameters) {
         var self = this;
         return new Promise(function(resolve, reject) {
             var authHeaders = self.getAuthHeaders(auth.token)
-            var prom = apiserviceHttp.apiActionJson(baseurl,path,port,'GET',null,protocol,authHeaders);
+            var fullPath = path + parameters;
+
+            var prom = apiserviceHttp.apiActionJson(baseurl,fullPath,port,'GET',null,protocol,authHeaders);
             if(prom) prom.then(function(response) {
                 //console.log(response)
                 if(response && response.data) {
@@ -70,12 +72,12 @@ module.exports = {
     },
 
 
-    apiReadItem(baseurl,path,port,protocol,auth,identifier) {
+    apiReadItem(baseurl,path,port,protocol,auth,parameters,identifier) {
         var self = this;
         return new Promise(function(resolve, reject) {
             var authHeaders = self.getAuthHeaders(auth.token)
 
-            var fullPath = path + "/" + identifier;
+            var fullPath = path + "/" + identifier + parameters;
 
             var prom = apiserviceHttp.apiActionJson(baseurl,fullPath,port,'GET',null,protocol,authHeaders);
             if(prom) prom.then(function(response) {
@@ -195,12 +197,13 @@ module.exports = {
 
 
 
-    apiSearchItem(baseurl,path,port,protocol,auth,search) {
+    apiSearchItem(baseurl,path,port,protocol,auth,parameters,search) {
+      console.log("apiSearchItem")
         var self = this;
         return new Promise(function(resolve, reject) {
             var authHeaders = self.getAuthHeaders(auth.token)
             var data = JSON.stringify( { 'search':search } );
-            var fullPath = path + "/search";
+            var fullPath = path + "/search" + parameters;
 
             var prom = apiserviceHttp.apiActionJson(baseurl,fullPath,port,'POST',data,protocol,authHeaders);
             if(prom) prom.then(function(response) {
