@@ -197,12 +197,13 @@ module.exports = {
 
 
 
-    apiSearchItem(baseurl,path,port,protocol,auth,parameters,search) {
+    apiSearchItem(baseurl,path,port,protocol,auth,parameters,search,search_remote_criteria) {
       console.log("apiSearchItem")
         var self = this;
         return new Promise(function(resolve, reject) {
             var authHeaders = self.getAuthHeaders(auth.token)
-            var data = JSON.stringify( { 'search':search } );
+
+            var data = JSON.stringify( { 'search':search, 'criteria':search_remote_criteria } );
             var fullPath = path + "/search" + parameters;
 
             var prom = apiserviceHttp.apiActionJson(baseurl,fullPath,port,'POST',data,protocol,authHeaders);

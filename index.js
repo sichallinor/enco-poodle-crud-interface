@@ -457,8 +457,10 @@ export default {
         var parameters = this.getParametersString(mode);
 
         // DOES THE MODE HAVE AN IDENTITY
-        var identity = (mode.search_data && mode.search_data.search_remote_identity) ? mode.search_data.search_remote_identity : null;        
-        // DOES THE MODE HAVE A SEARCH
+        var identity = (mode.search_data && mode.search_data.search_remote_identity) ? mode.search_data.search_remote_identity : null;   
+        // DOES THE MODE HAVE ANY SEARCH CRITERIA
+        var search_remote_criteria = (mode.search_data && mode.search_data.search_remote_criteria) ? mode.search_data.search_remote_criteria : null;               
+        // DOES THE MODE HAVE A SEARCH (GENERAL)
         var search = (mode.search_data && mode.search_data.search_remote &&  mode.search_data.search_remote.length>0) ? mode.search_data.search_remote : null;
 
         console.log("urlpath",urlpath)
@@ -471,8 +473,8 @@ export default {
         }else if(mode.apitype === "labrador"){
             if(identity){
                 return apiserviceLabrador.apiReadItem(mode.urlbase,mode.urlpath,mode.port,mode.protocol,mode.auth,parameters,identity)
-            }else if(search){
-                return apiserviceLabrador.apiSearchItem(mode.urlbase,urlpath,mode.port,mode.protocol,mode.auth,parameters,search)
+            }else if(search || search_remote_criteria){
+                return apiserviceLabrador.apiSearchItem(mode.urlbase,urlpath,mode.port,mode.protocol,mode.auth,parameters,search,search_remote_criteria)
             }else{
                 return apiserviceLabrador.apiReadItems(mode.urlbase,urlpath,mode.port,mode.protocol,mode.auth,parameters)
             }
@@ -608,13 +610,16 @@ export default {
 
         var remote_search = mode.remote_search ? mode.remote_search : mode.search_phrase ;
 
+        // DOES THE MODE HAVE ANY SEARCH CRITERIA
+        var remote_criteria = (mode.search_data && mode.search_data.search_remote_criteria) ? mode.search_data.search_remote_criteria : null; 
+
         //if(this.debug) console.log("createItem");
         var prom;
         if(mode.apitype === "phpcrud"){
             // temporarily forward request to OLD V1 FUNCTIONS
             return self.v1_getItems(mode)
         }else if(mode.apitype === "labrador"){
-            return apiserviceLabrador.apiSearchItem(mode.urlbase,mode.urlpath,mode.port,mode.protocol,mode.auth,remote_search)
+            return apiserviceLabrador.apiSearchItem(mode.urlbase,mode.urlpath,mode.port,mode.protocol,mode.auth,remote_search,remote_criteria)
         }else{
 
         }
