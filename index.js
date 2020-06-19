@@ -121,7 +121,8 @@ export default {
         return this.modeAuthenticateIfNecessaryAndThenPerformPromise(mode,func)
     },
     updateItems(mode=null) {
-        /// MISSING 
+        var func = function(self,mode) { return self.updateItemsModeFunction(mode); };
+        return this.modeAuthenticateIfNecessaryAndThenPerformPromise(mode,func)
     },
     createItem(mode=null) {
         var func = function(self,mode) { return self.createItemModeFunction(mode); };
@@ -222,7 +223,8 @@ export default {
                     // ----------------------------------
                     // MODE SPECIFIC FUNCTIONALITY FOLLOWS 
                     // MAY CHOSE TO PLACE THIS FUNCTIONALITY THIS INTO MODE CLASS
-                    mfModelAndItems.modeAddItems(mode,response)
+                    if(response.data) mfModelAndItems.modeAddItems(mode,response.data)
+                    if(response.pagination) mfModelAndItems.modeUpdatePagination(mode,response.pagination)
                     // ----------------------------------
                     resolve(response);
                 }, function(err) {
@@ -325,6 +327,35 @@ export default {
 
     // V2 MODE FUNCTION
     // RESOLVES WHEN COMPLETE HAVING MODIFIED THE MODE
+    updateItemsModeFunction(mode=null) {
+        var self = this;
+        return new Promise(function(resolve, reject) {
+            // ---------------------------------
+            var prom = self.updateItemsInStore(mode)
+            if(prom){
+                prom.then(function(response) {
+
+                    console.log("updateItemsModeFunction : PROMISE COMPLETE")
+                    // NOTE THERE IS NO FUNCTIONALITY TO UPDATE ALL THE MODELS 
+                    // EXCLUDING SET CLEAN
+                    //mfModelAndItems.modeUpdateModelWithData(mode,response)
+                    mfModelAndItems.modeSetBulkModelsAreClean(mode)
+ 
+                    resolve(response);
+                }, function(err) {
+                    reject(err);
+                });
+            }else{
+                reject();
+            }
+            // ---------------------------------
+        });
+    },
+
+
+
+    // V2 MODE FUNCTION
+    // RESOLVES WHEN COMPLETE HAVING MODIFIED THE MODE
     searchItemModeFunction(mode=null) {
         var self = this;
         return new Promise(function(resolve, reject) {
@@ -336,7 +367,9 @@ export default {
                     // ----------------------------------
                     // MODE SPECIFIC FUNCTIONALITY FOLLOWS 
                     // MAY CHOSE TO PLACE THIS FUNCTIONALITY THIS INTO MODE CLASS
-                    mfModelAndItems.modeAddItems(mode,response)
+                    if(response.data) mfModelAndItems.modeAddItems(mode,response.data)
+                    if(response.pagination) mfModelAndItems.modeUpdatePagination(mode,response.pagination)
+
                     // ----------------------------------
                     resolve(response);
                 }, function(err) {
@@ -424,6 +457,7 @@ export default {
     // based on the variables inside the urlparameters variable
     getParametersString(mode=null){
         var qryStrItems = [];
+        //---------------
         if(mode && mode.urlparameters){
             var keys = Object.keys(mode.urlparameters)
             for(var k=0; k<keys.length; k++){
@@ -433,6 +467,17 @@ export default {
                 qryStrItems.push(qryStrItem);
             }
         }
+        //---------------
+        if(mode && mode.pagination && mode.pagination.enabled){
+            var keys = Object.keys(mode.pagination)
+            for(var k=0; k<keys.length; k++){
+                var key = keys[k];
+                var value = mode.pagination[key];
+                var qryStrItem = key+"="+value
+                qryStrItems.push(qryStrItem);
+            }
+        }
+
         var final = ""
         if(qryStrItems.length>0) final = "?" + qryStrItems.join("&");
         return final;
@@ -568,6 +613,42 @@ export default {
 
 
     },
+
+
+    // V2 FUNCTION
+    // RETURNS...
+    updateItemsInStore(mode=null) {
+        if(mode) this.setMode(mode)
+        mode = this.getMode();
+        //------------------------
+
+        if(!this.requireModePropertiesOrError(['urlbase','urlpath','port','apitype','models'])){
+            throw "ERROR : MISSING PROPERTIES";
+        }
+
+        if(!mode.bulk || !mode.bulk.items || mode.bulk.items.length==0) return null;
+
+        var outgoingModels = []
+        for(var i=0; i<mode.bulk.items.length ; i++ ){
+            var outgoingModel = mfModelAndItems.parseOutgoingModel(mode.bulk.items[i]);
+            outgoingModels.push(outgoingModel)
+        }
+
+
+        //if(this.debug) console.log("createItem");
+        var prom;
+        if(mode.apitype === "phpcrud"){
+            // temporarily forward request to OLD V1 FUNCTIONS
+
+        }else if(mode.apitype === "labrador"){
+            return apiserviceLabrador.apiUpdateItems(mode.urlbase,mode.urlpath,mode.port,mode.protocol,mode.auth,outgoingModels)
+        }else{
+
+        }
+
+
+    },
+
 
     // V2 FUNCTION
     // RETURNS EMPTY OR MESSAGE

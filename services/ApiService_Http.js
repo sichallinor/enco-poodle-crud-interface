@@ -9,7 +9,7 @@ module.exports = {
       var self = this;
         return new Promise(function(resolve, reject) {
 
-            console.log("HTTP " + method + " : URL : ",baseurl + path);
+            console.log("HTTP " + method + " : URL : ",baseurl + path," DATA : ",data);
 
             var headers = {'Content-Type': 'application/json'};
             if(data){

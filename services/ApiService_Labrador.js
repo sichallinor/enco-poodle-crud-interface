@@ -53,9 +53,9 @@ module.exports = {
             var prom = apiserviceHttp.apiActionJson(baseurl,fullPath,port,'GET',null,protocol,authHeaders);
             if(prom) prom.then(function(response) {
                 //console.log(response)
-                if(response && response.data) {
+                if(response) {
                   // RESOLVE AND RETURN THE ITEMS
-                  resolve(response.data);
+                  resolve(response);
                 }else if(response && response.message){
                   // REJECT AND RETURN A MESSAGE
                   reject(response.message)
@@ -82,9 +82,9 @@ module.exports = {
             var prom = apiserviceHttp.apiActionJson(baseurl,fullPath,port,'GET',null,protocol,authHeaders);
             if(prom) prom.then(function(response) {
                 //console.log(response)
-                if(response && response.data) {
+                if(response) {
                   // RESOLVE AND RETURN THE ITEMS
-                  resolve(response.data);
+                  resolve(response);
                 }else if(response && response.message){
                   // REJECT AND RETURN A MESSAGE
                   reject(response.message)
@@ -161,6 +161,36 @@ module.exports = {
 
     },
 
+    apiUpdateItems(baseurl,path,port,protocol,auth,items) {
+        var self = this;
+        return new Promise(function(resolve, reject) {
+
+            var authHeaders = self.getAuthHeaders(auth.token)
+
+            var data = JSON.stringify({'bulk_items':items});
+
+            var fullPath = path + "/bulk";
+
+            var prom = apiserviceHttp.apiActionJson(baseurl,fullPath,port,'PUT',data,protocol,authHeaders);
+            if(prom) prom.then(function(response) {
+                //console.log(response)
+                if(response && response.data) {
+                  // RESOLVE AND RETURN THE TOKEN
+                  resolve(response.data);
+                }else if(response && response.message){
+                  // REJECT AND RETURN A ITEM
+                  reject(response.message)
+                }else{
+                  // REJECT
+                  reject("UNSPECIFIED ERROR")
+                }
+            }, function(err) {
+                console.log(err)
+                reject();
+            }); 
+        });
+
+    },
 
     apiDeleteItem(baseurl,path,port,protocol,auth,model) {
         var self = this;
@@ -203,15 +233,15 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             var authHeaders = self.getAuthHeaders(auth.token)
 
-            var data = JSON.stringify( { 'search':search, 'criteria':search_remote_criteria } );
+            var data = JSON.stringify( { 'search':search, 'criteria':search_remote_criteria} );
             var fullPath = path + "/search" + parameters;
 
             var prom = apiserviceHttp.apiActionJson(baseurl,fullPath,port,'POST',data,protocol,authHeaders);
             if(prom) prom.then(function(response) {
                 //console.log(response)
-                if(response && response.data) {
+                if(response) {
                   // RESOLVE AND RETURN THE ITEM
-                  resolve(response.data);
+                  resolve(response);
                 }else if(response && response.message){
                   // REJECT AND RETURN A MESSAGE
                   reject(response.message)
