@@ -104,6 +104,18 @@ export default {
     // LAYER 3 : SIMPLE INTERFACE ... methods that forward to relevant layers below
     // 
 
+    authenticateIfNecessary(mode=null) {
+        return this.modeAuthenticateIfNecessary(mode);
+    },
+    loginCheck(mode=null) {
+        return this.modeLoginCheck(mode);
+    },
+    logout(mode=null) {
+        return this.modeLogout(mode);
+    },
+    register(mode=null) {
+        return this.modeRegister(mode);
+    },
     getItems(mode=null) {
         // NOTE ... could also foward to searchItemModeFunction
         // NOTE ... func provides a pointer to the promise to be executed with the mode (in its future state)
@@ -187,13 +199,18 @@ export default {
                 if(prom){
                     prom.then(function(response) {
                         //console.log("modeAuthenticateIfNecessary : GOT AUTH")
-                        // RESPONSE IS A TOKEN
+                        // RESPONSE IS A AUTH RESPONSE INCLUDING PROFILE AND TOKEN DATA
                         // ----------------------------------
                         // MODE SPECIFIC FUNCTIONALITY FOLLOWS 
                         // MAY CHOSE TO PLACE THIS FUNCTIONALITY THIS INTO MODE CLASS
-                        mfAuth.modeAddAuthToken(mode,response)
-                        mfAuth.modeStripLoginDetails(mode)
-                        // ----------------------------------
+                        console.log("modeAuthenticateIfNecessary : ",response)
+                        if(response.data && response.data.token && response.data.token.length>0){
+                            mfAuth.modeAddAuthToken(mode,response.data.token)
+                            mfAuth.modeAddAuthUserData(mode,response.data)
+                            mfAuth.modeAddAuthSignInMethod(mode,"is_signed_in_email")
+                            mfAuth.modeStripLoginDetails(mode)
+                        }
+                        // RESOLVE
                         resolve(response);
                     }, function(err) {
                         console.log("modeAuthenticateIfNecessary : ERROR : ",err)
@@ -209,7 +226,84 @@ export default {
 
     },
 
+    // V2 MODE FUNCTION
+    // THIS FUNCTION SIMPLY TESTS AN EXISTING TOKEN AND RETURNS THE USER PROFILE JUST LIKE AUTHENTICATION
+    // RESOLVES WHEN FINISHED  
+    modeLoginCheck(mode=null){
 
+        var self = this;
+        return new Promise(function(resolve, reject) {
+
+            // ---------------------------------
+            var prom = self.loginCheckWithToken(mode)
+
+            if(prom){
+                prom.then(function(response) {
+                    //console.log("modeAuthenticateIfNecessary : GOT AUTH")
+                    // RESPONSE IS A AUTH RESPONSE INCLUDING PROFILE AND TOKEN DATA
+                    // ----------------------------------
+                    // MODE SPECIFIC FUNCTIONALITY FOLLOWS 
+                    // MAY CHOSE TO PLACE THIS FUNCTIONALITY THIS INTO MODE CLASS
+                    console.log("modeLoginCheck : ",response)
+                    if(response.data && response.data.token && response.data.token.length>0){
+                        mfAuth.modeAddAuthToken(mode,response.data.token)
+                        mfAuth.modeAddAuthUserData(mode,response.data)
+                        mfAuth.modeAddAuthSignInMethod(mode,"is_signed_in_email")
+                        mfAuth.modeStripLoginDetails(mode)
+                    }
+                    // RESOLVE
+                    resolve(response);
+                }, function(err) {
+                    console.log("modeLoginCheck : ERROR : ",err)
+                    reject(err);
+                });
+            }else{
+                console.log("reject")
+                reject();
+            }
+            // ---------------------------------
+        
+
+        });
+
+    },
+
+    modeLogout(mode=null){
+        mfAuth.modeStripAuthToken(mode)
+        mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
+    },
+
+    modeRegister(mode=null){
+        var self = this;
+        return new Promise(function(resolve, reject) {
+
+            // ---------------------------------
+            var prom = self.registerWithEmailAndPassword(mode)
+
+            if(prom){
+                prom.then(function(response) {
+                    //console.log("modeAuthenticateIfNecessary : GOT AUTH")
+                    // RESPONSE IS A AUTH RESPONSE INCLUDING PROFILE AND TOKEN DATA
+                    // ----------------------------------
+                    // MODE SPECIFIC FUNCTIONALITY FOLLOWS 
+                    // MAY CHOSE TO PLACE THIS FUNCTIONALITY THIS INTO MODE CLASS
+                    console.log("modeRegister : ",response)
+
+                    // RESOLVE
+                    resolve(response);
+                }, function(err) {
+                    console.log("modeRegister : ERROR : ",err)
+                    reject(err);
+                });
+            }else{
+                console.log("reject")
+                reject();
+            }
+            // ---------------------------------
+        
+
+        });
+    },
 
     // V2 MODE FUNCTION
     // RESOLVES WHEN COMPLETE HAVING MODIFIED THE MODE
@@ -428,7 +522,7 @@ export default {
 
 
     // V2 FUNCTION
-    // RETURNS A TOKEN
+    // RETURNS A PROFILE (THAT INCLUDES A TOKEN PLUS USER DATA)
     authenticateWithEmailPassword(mode=null){
         var self = this;
         if(mode) this.setMode(mode)
@@ -452,6 +546,60 @@ export default {
         }
     },
 
+    // V2 FUNCTION
+    // RETURNS A PROFILE (THAT INCLUDES A TOKEN PLUS USER DATA)
+    loginCheckWithToken(mode=null){
+        var self = this;
+        if(mode) this.setMode(mode)
+        mode = this.getMode();
+        //------------------------
+
+        if(!this.requireModePropertiesOrError(['urlbase','urlpath','port','apitype','auth'])){
+            throw "ERROR : MISSING PROPERTIES";
+        }
+
+        //if(this.debug)  console.log("authenticateWithEmailPassword");
+        var prom;
+        if(mode.apitype === "phpcrud"){
+            // temporarily forward request to OLD V1 FUNCTIONS
+            return null
+        }else if(mode.apitype === "labrador"){
+            var urlpath = (mode.auth.hasOwnProperty('urlpath_tokencheck')) ? mode.auth.urlpath_tokencheck : mode.urlpath_tokencheck;
+            return apiserviceLabrador.apiLoginCheck(mode.urlbase,urlpath,mode.port,mode.protocol,mode.auth)
+        }else{
+
+        }
+    },
+
+    // V2 FUNCTION
+    // RETURNS A PROFILE (THAT INCLUDES A TOKEN PLUS USER DATA)
+    registerWithEmailAndPassword(mode=null){
+        var self = this;
+        if(mode) this.setMode(mode)
+        mode = this.getMode();
+        //------------------------
+
+        if(!this.requireModePropertiesOrError(['urlbase','urlpath','port','apitype','auth'])){
+            throw "ERROR : MISSING PROPERTIES";
+        }
+
+        //if(this.debug)  console.log("authenticateWithEmailPassword");
+        var prom;
+        if(mode.apitype === "phpcrud"){
+            // temporarily forward request to OLD V1 FUNCTIONS
+            return null
+        }else if(mode.apitype === "labrador"){
+            var urlpath = (mode.auth.hasOwnProperty('urlpath_register')) ? mode.auth.urlpath_register : '/api/register';
+            var registration_data = (mode.auth.hasOwnProperty('registration_data')) ? mode.auth.registration_data : null;
+            if(urlpath && registration_data){
+                return apiserviceLabrador.apiRegisterWithEmailAndPassword(mode.urlbase,urlpath,mode.port,mode.protocol,registration_data)
+            }else{
+                return null;
+            }
+        }else{
+            return null;
+        }
+    },
 
     // Returns the parameter string that would be used 
     // based on the variables inside the urlparameters variable
@@ -498,13 +646,23 @@ export default {
 
         // STORE REFERENCES
         var schema = (mode.schemas && mode.schemas.length>0) ? mode.schemas[0] : null;
+        // ---------------------------------------------
+        // URL PATHS TO USE ... IN DIFFERENT SCENARIOS
         var urlpath = mode.urlpath;
+        var urlpathsearch = (mode.urlpath_search) ? mode.urlpath_search : urlpath;
+        // ---------------------------------------------
         var parameters = this.getParametersString(mode);
 
         // DOES THE MODE HAVE AN IDENTITY
-        var identity = (mode.search_data && mode.search_data.search_remote_identity) ? mode.search_data.search_remote_identity : null;   
+        var identity = (mode.search_data && mode.search_data.search_remote_identity) ? mode.search_data.search_remote_identity : null;
+
         // DOES THE MODE HAVE ANY SEARCH CRITERIA
         var search_remote_criteria = (mode.search_data && mode.search_data.search_remote_criteria) ? mode.search_data.search_remote_criteria : null;               
+        // DOES THE MODE HAVE ANY SEARCH ORDER
+        var search_remote_order = (mode.search_data && mode.search_data.search_remote_order) ? mode.search_data.search_remote_order : null;  
+
+        // DOES THE MODE HAVE ANY SEARCH FIELDS (ie does it specify the fields to search remotely)
+        var search_remote_fields = (mode.search_data && mode.search_data.search_remote_fields) ? mode.search_data.search_remote_fields : null;  
         // DOES THE MODE HAVE A SEARCH (GENERAL)
         var search = (mode.search_data && mode.search_data.search_remote &&  mode.search_data.search_remote.length>0) ? mode.search_data.search_remote : null;
 
@@ -519,7 +677,7 @@ export default {
             if(identity){
                 return apiserviceLabrador.apiReadItem(mode.urlbase,mode.urlpath,mode.port,mode.protocol,mode.auth,parameters,identity)
             }else if(search || search_remote_criteria){
-                return apiserviceLabrador.apiSearchItem(mode.urlbase,urlpath,mode.port,mode.protocol,mode.auth,parameters,search,search_remote_criteria)
+                return apiserviceLabrador.apiSearchItem(mode.urlbase,urlpathsearch,mode.port,mode.protocol,mode.auth,parameters,search,search_remote_criteria,search_remote_fields,search_remote_order)
             }else{
                 return apiserviceLabrador.apiReadItems(mode.urlbase,urlpath,mode.port,mode.protocol,mode.auth,parameters)
             }
@@ -689,10 +847,13 @@ export default {
             throw "ERROR : MISSING PROPERTIES";
         }
 
-        var remote_search = mode.remote_search ? mode.remote_search : mode.search_phrase ;
-
+        var remote_search = mode.remote_search ? mode.remote_search : mode.search_phrase;
+        // DOES THE MODE HAVE ANY SEARCH FIELDS (ie does it specify the fields to search remotely)
+        var search_remote_fields = (mode.search_data && mode.search_data.search_remote_fields) ? mode.search_data.search_remote_fields : null;  
         // DOES THE MODE HAVE ANY SEARCH CRITERIA
         var remote_criteria = (mode.search_data && mode.search_data.search_remote_criteria) ? mode.search_data.search_remote_criteria : null; 
+        // DOES THE MODE HAVE ANY SEARCH ORDER
+        var search_remote_order = (mode.search_data && mode.search_data.search_remote_order) ? mode.search_data.search_remote_order : null;  
 
         //if(this.debug) console.log("createItem");
         var prom;
@@ -700,12 +861,14 @@ export default {
             // temporarily forward request to OLD V1 FUNCTIONS
             return self.v1_getItems(mode)
         }else if(mode.apitype === "labrador"){
-            return apiserviceLabrador.apiSearchItem(mode.urlbase,mode.urlpath,mode.port,mode.protocol,mode.auth,remote_search,remote_criteria)
+            return apiserviceLabrador.apiSearchItem(mode.urlbase,mode.urlpath,mode.port,mode.protocol,mode.auth,remote_search,remote_criteria,search_remote_fields,search_remote_order)
         }else{
 
         }
 
     },
+
+
 
 
 //================================================================================

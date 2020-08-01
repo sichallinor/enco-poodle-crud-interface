@@ -11,6 +11,8 @@ module.exports = {
     //        2) CONVERT INTO A SIMPLE HTTP REQUEST (RELEVANT TO LABRADOR)
     //        3) RETURN APPROPRIATE DATA (RELEVANT TO LABRADOR)
 
+    
+
     apiAuthenticateWithEmailAndPassword(baseurl,path,port,protocol,auth) {
         console.log('apiAuthenticateWithEmailAndPassword')
         return new Promise(function(resolve, reject) {
@@ -19,8 +21,8 @@ module.exports = {
             if(prom) prom.then(function(response) {
                 //console.log(response)
                 if(response && response.data && response.data.token) {
-                  // RESOLVE AND RETURN THE TOKEN
-                  resolve(response.data.token);
+                  // RETURNS A PROFILE (THAT INCLUDES A TOKEN PLUS USER DATA)
+                  resolve(response);
                 }else if(response && response.message){
                   // REJECT AND RETURN A MESSAGE
                   reject(response.message)
@@ -34,6 +36,59 @@ module.exports = {
             }); 
         });
 
+    },
+
+
+    apiLoginCheck(baseurl,path,port,protocol,auth) {
+        console.log('apiLoginCheck')
+        var self = this;
+        return new Promise(function(resolve, reject) {
+            var authHeaders = self.getAuthHeaders(auth.token)
+            var prom = apiserviceHttp.apiActionJson(baseurl,path,port,'GET',null,protocol,authHeaders);
+            if(prom) prom.then(function(response) {
+                //console.log(response)
+                if(response && response.data && response.data.token) {
+                  // RETURNS A PROFILE (THAT INCLUDES A TOKEN PLUS USER DATA)
+                  resolve(response);
+                }else if(response && response.message){
+                  // REJECT AND RETURN A MESSAGE
+                  reject(response.message)
+                }else{
+                  // REJECT
+                  reject("UNSPECIFIED ERROR")
+                }
+            }, function(err) {
+                console.log(err)
+                reject();
+            }); 
+        });
+
+    },
+
+
+    apiRegisterWithEmailAndPassword(baseurl,path,port,protocol,registration_data){
+        console.log('apiRegisterWithEmailAndPassword')
+        var self = this;
+        return new Promise(function(resolve, reject) {
+            var data = JSON.stringify(registration_data);
+            var prom = apiserviceHttp.apiActionJson(baseurl,path,port,'POST',data,protocol);
+            if(prom) prom.then(function(response) {
+                //console.log(response)
+                if(response && response.data && response.data.token) {
+                  // 
+                  resolve(response);
+                }else if(response && response.message){
+                  // REJECT AND RETURN A MESSAGE
+                  reject(response.message)
+                }else{
+                  // REJECT
+                  reject("UNSPECIFIED ERROR")
+                }
+            }, function(err) {
+                console.log(err)
+                reject();
+            }); 
+        });
     },
 
 
@@ -227,14 +282,21 @@ module.exports = {
 
 
 
-    apiSearchItem(baseurl,path,port,protocol,auth,parameters,search,search_remote_criteria) {
+    apiSearchItem(baseurl,path,port,protocol,auth,parameters,search,search_remote_criteria,search_remote_fields,search_remote_order) {
       console.log("apiSearchItem")
         var self = this;
         return new Promise(function(resolve, reject) {
             var authHeaders = self.getAuthHeaders(auth.token)
 
-            var data = JSON.stringify( { 'search':search, 'criteria':search_remote_criteria} );
-            var fullPath = path + "/search" + parameters;
+            var dataObj = {}
+            if(search) dataObj['search'] = search
+            if(search_remote_fields) dataObj['search_fields'] = search_remote_fields
+            if(search_remote_criteria) dataObj['criteria'] = search_remote_criteria  
+            if(search_remote_order) dataObj['order'] = search_remote_order 
+            var data = JSON.stringify( dataObj);
+
+            //var fullPath = path + "/search" + parameters;
+            var fullPath = path + parameters;
 
             var prom = apiserviceHttp.apiActionJson(baseurl,fullPath,port,'POST',data,protocol,authHeaders);
             if(prom) prom.then(function(response) {
@@ -256,6 +318,7 @@ module.exports = {
         });
 
     },
+
 
 
 }
