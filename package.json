@@ -29,6 +29,6 @@
   "dependencies": {
     "ajax-request": "^1.2.3",
     "chai-as-promised": "^7.1.1",
-    "enco-poodle-mode-simple": "^0.1.10"
+    "enco-poodle-mode-simple": "^0.1.11"
   }
 }

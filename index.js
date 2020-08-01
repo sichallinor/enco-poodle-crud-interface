@@ -189,7 +189,7 @@ export default {
         var self = this;
         return new Promise(function(resolve, reject) {
 
-            if( mode.hasOwnProperty('auth') && mode.auth.hasOwnProperty('token') ){
+            if( mode.hasOwnProperty('auth') && mode.auth.hasOwnProperty('token') && mode.auth.token ){
                 console.log("modeAuthenticateIfNecessary : ALREADY AUTHENTICATED")
                 resolve();
             }else{
