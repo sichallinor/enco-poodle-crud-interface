@@ -1,6 +1,6 @@
 {
   "name": "enco-poodle-crud-interface",
-  "version": "0.1.25",
+  "version": "0.1.26",
   "description": "A CRUD API Consumer",
   "main": "index.js",
   "scripts": {
