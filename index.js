@@ -255,10 +255,12 @@ export default {
                     resolve(response);
                 }, function(err) {
                     console.log("modeLoginCheck : ERROR : ",err)
+                    mfAuth.modeStripAuthToken(mode)
                     reject(err);
                 });
             }else{
                 console.log("reject")
+                mfAuth.modeStripAuthToken(mode)
                 reject();
             }
             // ---------------------------------
