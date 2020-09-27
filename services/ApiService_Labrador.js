@@ -108,8 +108,9 @@ module.exports = {
             var prom = apiserviceHttp.apiActionJson(baseurl,fullPath,port,'GET',null,protocol,authHeaders);
             if(prom) prom.then(function(response) {
                 //console.log(response)
-                if(response) {
+                if(response && response.success) {
                   // RESOLVE AND RETURN THE ITEMS
+                  console.log("HAVE SUCCESS")
                   resolve(response);
                 }else if(response && response.message){
                   // REJECT AND RETURN A MESSAGE
@@ -301,7 +302,7 @@ module.exports = {
             var prom = apiserviceHttp.apiActionJson(baseurl,fullPath,port,'POST',data,protocol,authHeaders);
             if(prom) prom.then(function(response) {
                 //console.log(response)
-                if(response) {
+                if(response && response.success) {
                   // RESOLVE AND RETURN THE ITEM
                   resolve(response);
                 }else if(response && response.message){

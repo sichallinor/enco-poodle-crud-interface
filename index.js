@@ -214,9 +214,13 @@ export default {
                         resolve(response);
                     }, function(err) {
                         console.log("modeAuthenticateIfNecessary : ERROR : ",err)
+                        mfAuth.modeStripAuthToken(mode)
+                        mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                         reject(err);
                     });
                 }else{
+                    mfAuth.modeStripAuthToken(mode)
+                    mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                     reject();
                 }
                 // ---------------------------------
@@ -256,11 +260,13 @@ export default {
                 }, function(err) {
                     console.log("modeLoginCheck : ERROR : ",err)
                     mfAuth.modeStripAuthToken(mode)
+                    mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                     reject(err);
                 });
             }else{
                 console.log("reject")
                 mfAuth.modeStripAuthToken(mode)
+                mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                 reject();
             }
             // ---------------------------------
@@ -324,9 +330,13 @@ export default {
                     // ----------------------------------
                     resolve(response);
                 }, function(err) {
+                    mfAuth.modeStripAuthToken(mode)
+                    mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                     reject(err);
                 });
             }else{
+                mfAuth.modeStripAuthToken(mode)
+                mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                 reject();
             }
             // ---------------------------------
@@ -353,9 +363,13 @@ export default {
                     // ----------------------------------
                     resolve(response);
                 }, function(err) {
+                    mfAuth.modeStripAuthToken(mode)
+                    mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                     reject(err);
                 });
             }else{
+                mfAuth.modeStripAuthToken(mode)
+                mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                 reject();
             }
             // ---------------------------------
@@ -383,10 +397,14 @@ export default {
                     resolve(response);
                 }, function(err) {
                     console.log("createItemModeFunction : ok 2" )
+                    mfAuth.modeStripAuthToken(mode)
+                    mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                     reject(err);
                 });
             }else{
                 console.log("createItemModeFunction : ok 3" )
+                mfAuth.modeStripAuthToken(mode)
+                mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                 reject();
             }
             // ---------------------------------
@@ -411,9 +429,13 @@ export default {
                     // ----------------------------------
                     resolve(response);
                 }, function(err) {
+                    mfAuth.modeStripAuthToken(mode)
+                    mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                     reject(err);
                 });
             }else{
+                mfAuth.modeStripAuthToken(mode)
+                mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                 reject();
             }
             // ---------------------------------
@@ -439,9 +461,13 @@ export default {
  
                     resolve(response);
                 }, function(err) {
+                    mfAuth.modeStripAuthToken(mode)
+                    mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                     reject(err);
                 });
             }else{
+                mfAuth.modeStripAuthToken(mode)
+                mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                 reject();
             }
             // ---------------------------------
@@ -469,9 +495,13 @@ export default {
                     // ----------------------------------
                     resolve(response);
                 }, function(err) {
+                    mfAuth.modeStripAuthToken(mode)
+                    mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                     reject(err);
                 });
             }else{
+                mfAuth.modeStripAuthToken(mode)
+                mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                 reject();
             }
             // ---------------------------------
@@ -500,9 +530,13 @@ export default {
                     // ----------------------------------
                     resolve(response);
                 }, function(err) {
+                    mfAuth.modeStripAuthToken(mode)
+                    mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                     reject(err);
                 });
             }else{
+                mfAuth.modeStripAuthToken(mode)
+                mfAuth.modeStripAuthSignInMethod(mode,"is_signed_in_email")
                 reject();
             }
 
